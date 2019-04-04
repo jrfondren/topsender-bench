@@ -25,8 +25,5 @@ $ make
 |  3.8x | Python 3 | .py               | 2350 ms    | 23.7 MB |                                                       |
 
 ## notes
-- libc regex is pretty slow, vs. PCRE
-- D's regex is even worse
-- that D is improved by getline() is disappointing
 - caveat: I'm currently on chapter 1 of _The D Programming Language_
 - C's uthash.h is from https://troydhanson.github.io/uthash/
