@@ -8,7 +8,7 @@ T min(T)(T a, T b) {
 
 void main() {
 	ulong[string] emailcounts;
-	auto re = ctRegex!(r"(?:\S+ ){3,4}<= ([^@]+@(\S+))");
+	auto re = ctRegex!(r"^(?:\S+ ){3,4}<= ([^@]+@(\S+))");
 
 	foreach (line; File("exim_mainlog").byLine()) {
 		auto m = line.match(re);
