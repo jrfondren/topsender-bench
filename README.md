@@ -10,26 +10,31 @@ $ make
 
 ## timings, average of three runs
 
-| Speed | Language | File              | Runtime    | MaxRSS   | Flags                                                 |
-|-------|----------|-------------------|------------|----------|-------------------------------------------------------|
-|    1x | C        | \_pcre.c          | 626 ms     | 15.7 MB  | -O3                                                   |
-|  3.8x | C        | .c                | 2362 ms    | 15.6 MB  | -O3                                                   |
-|  3.3x | Crystal  | .cr               | 2090 ms    | 26.2 MB  | crystal build --release                               |
-|-------|----------|-------------------|------------|----------|-------------------------------------------------------|
-|  140x | D        | .d                | 1 min 28 s | 16.7 MB  | dmd -O                                                |
-|   63x | D        | .d                | 39.5 s     | 16.7 MB  | dmd -inline                                           |
-|   50x | D        | .d                | 31.6 s     | 16.6 MB  | dmd -inline -release -O -mcpu=native -boundscheck=off |
-|  2.5x | D        | \_pcre.d          | 1590 ms    | 97.6 MB  | dmd -O                                                |
-|  1.3x | D        | \_pcre\_getline.d | 830 ms     | 16.4 MB  | dmd -O                                                |
-|  1.2x | D        | \_pcre\_getline.d | 780 ms     | 16.4 MB  | dmd -inline -release -O -mcpu=native -boundscheck=off |
-|-------|----------|-------------------|------------|----------|-------------------------------------------------------|
-|   35x | D        | .d                | 21.8 s     | 20.2 MB  | ldc2 -O3                                              |
-|  2.2x | D        | \_pcre.d          | 1392 ms    | 101.3 MB | ldc2 -O3                                              |
-|  1.3x | D        | \_pcre\_getline.d | 798 ms     | 20.1 MB  | ldc2 -O3                                              |
-|-------|----------|-------------------|------------|----------|-------------------------------------------------------|
-|  2.1x | Perl     | .pl               | 1290 ms    | 24.2 MB  |                                                       |
-|  3.8x | Python 3 | .py               | 2350 ms    | 23.7 MB  |                                                       |
+| Speed | Language | File          | Runtime     | MaxRSS  | Flags                   |
+|-------+----------+---------------+-------------+---------+-------------------------|
+|    1x | C        | \_pcre.c      | 1027 ms     | 14.9 MB | -O3                     |
+|   11x | C        | .c            | 11 s 984 ms | 14.9 MB |                         |
+|  3.2x | Crystal  | .cr           | 3 s 292 ms  | 19.2 MB | crystal build --release |
+|-------+----------+---------------+-------------+---------+-------------------------|
+|   16x | D        | .d            | 17 s 758 ms | 14.8 MB | dmd -O                  |
+|  8.5x | D        | .d            | 9 s 742 ms  | 15.1 MB | ldc2 -O                 |
+|-------+----------+---------------+-------------+---------+-------------------------|
+|  3.4x | Nim      | \_altsort.nim | 4 s 547 ms  | 14.6 MB | -d:release --opt:speed  |
+|  4.9x | Nim      | \_npeg.nim    | 5 s 20 ms   | 10.4 MB | -d:release --opt:speed  |
+| 50.2x | Nim      | \_regex.nim   | 52 s 521 ms | 24.6 MB | -d:release --opt:speed  |
+|-------+----------+---------------+-------------+---------+-------------------------|
+|  2.3x | Perl     | .pl           | 2313 ms     | 18.4 MB |                         |
+|  4.9x | Python 3 | .py           | 5 s 1 ms    | 22.9 MB |                         |
 
 ## notes
-- caveat: I'm currently on chapter 1 of _The D Programming Language_
 - C's uthash.h is from https://troydhanson.github.io/uthash/
+- a previous chart had wildly wrong D timings due to an unnoticed
+  difference in the regex (it lacked a leading anchor, causing it to
+  thrash wildly on the many, many non-matching lines in the log)
+- the D pcre shim stuff completely fails on macOS, so it's absent from
+  this chart
+- .nim is excluded as it's wildly more expensive than altsort (fixed
+  in next release--should then cost the same as altsort)
+- regex.nim is using the 'regex' nimble module rather than nim's own PCRE-wrapping 're'
+- npeg.nim is using a Parsing Expression Grammar ('npeg' on
+  nimble) rather than a regex

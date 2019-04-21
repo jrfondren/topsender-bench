@@ -1,20 +1,28 @@
-BINS=$(patsubst %.d,%,$(wildcard *.d))
+T=topsender_
+BINS=$Tc $Tpcre_c
+BINS=$Tcr
+BINS+=$Tnim $Taltsort_nim $Tnpeg_nim $Tregex_nim
+BINS+=$Tdmd $Tpcre_dmd $Tpcre_getline_dmd
+BINS+=$Tldc $Tpcre_ldc $Tpcre_getline_ldc
 
-pcre_d_shim.o: pcre_d_shim.c
-	gcc -O3 -Wall -c pcre_d_shim.c
+all:: $(BINS)
+
+bench:: all
+	REF=$$(getr 3 ./topsender_pcre_c 2>&1 | perl -lne 'print $$1 if /^Time.*\((\S+) ms.per/'); for targ in $(BINS); do >&2 /bin/echo -n "| $$targ "; getr -b $$REF 3 ./$$targ >/dev/null; done
 
 clean::
 	rm -fv *.o
 	rm -fv $(BINS)
 
-ocaml::
-	ocamlfind ocamlopt -linkpkg -package re -O3 -o topsender topsender.ml
-
-d:: topsender_pcre topsender_pcre_getline
-	dmd -O topsender.d
-
-topsender_pcre: topsender_pcre.d pcre_d_shim.o
-	dmd -O $@.d pcre_d_shim.o -L-lpcre
-
-topsender_pcre_getline: topsender_pcre_getline.d pcre_d_shim.o
-	dmd -O $@.d pcre_d_shim.o -L-lpcre
+%_c: %.c
+	gcc -O3 -Wall -o $@ $< -lpcre
+%_nim: %.nim
+	nim c -d:release --opt:speed -o:$@ $<
+%_dmd: %.d pcre_d_shim.o
+	dmd -O $(DFLAGS) -of=$@ $< pcre_d_shim.o -L-lpcre
+%_ldc: %.d pcre_d_shim.o
+	ldc2 -O $(DFLAGS) -of=$@ $< pcre_d_shim.o -L-lpcre
+pcre_d_shim.o: pcre_d_shim.c
+	gcc -O3 -Wall -c pcre_d_shim.c
+%_cr: %.cr
+	crystal build --release -o $@ $<
