@@ -4,14 +4,12 @@ var emailcounts = initCountTable[string]()
 
 var emailsender: string
 
-# 'Fraph' can be replaced with 'Graph' on next release of npeg
 let eximparser = peg "sender":
-  sender <- +Fraph * ' ' * +Fraph * ' ' * +Fraph * ' ' * MaybeVPS * >Email * ' ':
+  sender <- +Graph * ' ' * +Graph * ' ' * +Graph * ' ' * MaybeVPS * >Email * ' ':
     emailsender = $1
-  MaybeVPS <- "<= " | +Fraph * " <= "
+  MaybeVPS <- "<= " | +Graph * " <= "
   Email <- +NonAt * '@' * +NonAt
-  NonAt <- {'\x21'..'\x39', '\x41'..'\x7e'}
-  Fraph <- {'\x21'..'\x7e'}
+  NonAt <- Graph - '@'
 
 for line in "exim_mainlog".lines:
   if eximparser.match(line).ok:
