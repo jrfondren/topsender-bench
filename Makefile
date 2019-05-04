@@ -1,7 +1,7 @@
 T=topsender_
 BINS=$Tc $Tpcre_c
-BINS=$Tcr
-BINS+=$Tnim $Taltsort_nim $Tnpeg_nim $Tregex_nim
+#BINS=$Tcr
+BINS+=$Tnim $Taltsort_nim $Tnpeg_nim $Tregex_nim $Tnpeg_getline_nim
 BINS+=$Tdmd $Tpcre_dmd $Tpcre_getline_dmd
 BINS+=$Tldc $Tpcre_ldc $Tpcre_getline_ldc
 
@@ -17,12 +17,12 @@ clean::
 %_c: %.c
 	gcc -O3 -Wall -o $@ $< -lpcre
 %_nim: %.nim
-	nim c -d:release --opt:speed -o:$@ $<
+	nim c -d:release -o:$@ $<
 %_dmd: %.d pcre_d_shim.o
 	dmd -O $(DFLAGS) -of=$@ $< pcre_d_shim.o -L-lpcre
 %_ldc: %.d pcre_d_shim.o
 	ldc2 -O $(DFLAGS) -of=$@ $< pcre_d_shim.o -L-lpcre
 pcre_d_shim.o: pcre_d_shim.c
 	gcc -O3 -Wall -c pcre_d_shim.c
-%_cr: %.cr
-	crystal build --release -o $@ $<
+#%_cr: %.cr
+#	crystal build --release -o $@ $<
