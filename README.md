@@ -27,7 +27,6 @@ $ make
 |  4.25x | Nim         | \_altsort.nim       | 2624 ms     | 15.7 MB |
 |  4.27x | Nim         | \_npeg.nim          | 2635 ms     | 21.3 MB |
 |  60.2x | Nim         | \_regex.nim         | 37 s 152 ms | 25.7 MB |
-|  85.3x | Nim         | \_npeg\_getline.nim | 52 s 866 ms | 14.3 MB |
 |--------|-------------|---------------------|-------------|---------|
 |   2.1x | Perl        | .pl                 | 1297 ms     | 24.1 MB |
 |  3.29x | Pypy        | \_pypy.py           | 2002 ms     | 87.4 MB |
