@@ -15,7 +15,7 @@ clean::
 	rm -fv *.o
 	rm -fv $(BINS)
 
-%_m: %.m
+%_m: %.m pcre_d_shim.o
 	mmc -O6 --make $(patsubst %.m,%,$<) --link-object pcre_d_shim.o -lpcre
 	mv $(patsubst %.m,%,$<) $@
 
