@@ -1,9 +1,10 @@
 T=topsender_
 BINS=$Tc $Tpcre_c
 #BINS=$Tcr
-BINS+=$Tnim $Taltsort_nim $Tnpeg_nim $Tregex_nim $Tnpeg_getline_nim
+BINS+=$Tnim $Taltsort_nim $Tnpeg_nim $Tregex_nim $Tnpeg_getline_nim $Tgetline_nim
 BINS+=$Tdmd $Tpcre_dmd $Tpcre_getline_dmd
 BINS+=$Tldc $Tpcre_ldc $Tpcre_getline_ldc
+BINS+=$Tm
 
 all:: $(BINS)
 
@@ -14,10 +15,14 @@ clean::
 	rm -fv *.o
 	rm -fv $(BINS)
 
+%_m: %.m
+	mmc -O6 --make $(patsubst %.m,%,$<) --link-object pcre_d_shim.o -lpcre
+	mv $(patsubst %.m,%,$<) $@
+
 %_c: %.c
 	gcc -O3 -Wall -o $@ $< -lpcre
 %_nim: %.nim
-	nim c -d:release -o:$@ $<
+	nim c -d:danger -o:$@ $<
 %_dmd: %.d pcre_d_shim.o
 	dmd -O $(DFLAGS) -of=$@ $< pcre_d_shim.o -L-lpcre
 %_ldc: %.d pcre_d_shim.o
