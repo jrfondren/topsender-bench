@@ -12,7 +12,7 @@
     ;       regex_failed.
 
     % Open file by name (first argument) and read it line by line, testing
-    % each like by a regex (second argument), while populating the provided
+    % each line by a regex (second argument), while populating the provided
     % hash table with counts of the regex's matches.
     %
     % The regex needs to have a single capturing group.
