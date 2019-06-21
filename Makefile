@@ -4,7 +4,7 @@ BINS=$Tc $Tpcre_c
 BINS+=$Tnim $Taltsort_nim $Tnpeg_nim $Tregex_nim $Tnpeg_getline_nim $Tgetline_nim
 BINS+=$Tdmd $Tpcre_dmd $Tpcre_getline_dmd
 BINS+=$Tldc $Tpcre_ldc $Tpcre_getline_ldc
-BINS+=$Tm
+BINS+=$Tm $Tgetline_m
 
 all:: $(BINS)
 
@@ -14,9 +14,15 @@ bench:: all
 clean::
 	rm -fv *.o
 	rm -fv $(BINS)
+	rm -rfv Mercury
+	rm -fv *.mh
 
-%_m: %.m pcre_d_shim.o
+topsender_m: topsender.m pcre_d_shim.o
 	mmc -O6 --make $(patsubst %.m,%,$<) --link-object pcre_d_shim.o -lpcre
+	mv $(patsubst %.m,%,$<) $@
+
+topsender_getline_m: topsender_getline.m getline.m
+	mmc -O6 --make $(patsubst %.m,%,$<) -lpcre
 	mv $(patsubst %.m,%,$<) $@
 
 %_c: %.c
