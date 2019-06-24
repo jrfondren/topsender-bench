@@ -28,11 +28,8 @@ main(!IO) :-
     Regex = "^(?:[^ ]+ ){3,4}<= ([^@]+@([^ ]+))",
     HT0 = hash_table.init(string_hash, 16, 0.9).
 
-:- func cmp(pair(string, int), pair(string, int)) = comparison_result.
-cmp(A, B) = ordering(snd(B) `with_type` int, snd(A) `with_type` int).
-
 report(HT, Results) :-
-    sort(cmp, to_assoc_list(HT)) = L,
+    sort((func(_-A, _-B) = ordering(B, A)), to_assoc_list(HT)) = L,
     Results = take_upto(5, L).
 
 dump([], !IO).
