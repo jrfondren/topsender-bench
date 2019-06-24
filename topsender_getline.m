@@ -26,7 +26,7 @@ main(!IO) :-
     ),
     Log = "exim_mainlog",
     Regex = "^(?:[^ ]+ ){3,4}<= ([^@]+@([^ ]+))",
-    HT0 = hash_table.init(string_hash, 16, 0.9).
+    HT0 = hash_table.init_default(string_hash).
 
 report(HT, Results) :-
     sort((func(_-A, _-B) = ordering(B, A)), to_assoc_list(HT)) = L,
