@@ -33,6 +33,6 @@ report(HT, Results) :-
     Results = take_upto(5, L).
 
 dump([], !IO).
-dump([H|T], !IO) :-
-    io.format("%10d %s\n", [i(snd(H)), s(fst(H))], !IO),
+dump([Sender - Count|T], !IO) :-
+    io.format("%10d %s\n", [i(Count), s(Sender)], !IO),
     dump(T, !IO).
