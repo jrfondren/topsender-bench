@@ -46,7 +46,7 @@ inc(S, HT0) = HT :-
     ssize_t read;
     pcre *regex;
     pcre_extra *study;
-    int matches[4];
+    int matches[12];
     int regresult;
     const char *error;
     int erroffset;
