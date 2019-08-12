@@ -63,7 +63,7 @@ inc(S, HT0) = HT :-
                 Res = GLR_OPEN_FAILED;
             } else {
                 while (-1 != (read = getline(&line, &len, file))) {
-                    regresult = pcre_exec(regex, study, line, len, 0, 0, matches, sizeof matches);
+                    regresult = pcre_exec(regex, study, line, len, 0, 0, matches, sizeof(matches)/sizeof(int));
                     if (regresult < -1) break;
                     if (regresult > 0) {
                         line[matches[3]] = '\\0';
