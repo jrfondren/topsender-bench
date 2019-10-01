@@ -40,10 +40,10 @@ void email_free (void) {
 }
 
 char *email_sender (char *line, size_t len) {
-        int matches[4];
+        int matches[6];
         int regresult;
 
-	regresult = pcre_exec(emails, study, line, len, 0, 0, matches, sizeof matches);
+	regresult = pcre_exec(emails, study, line, len, 0, 0, matches, sizeof(matches)/sizeof(int));
 	if (regresult < -1) {
 		fprintf(stderr, "failed to pcre_exec\n");
 		exit(1);

@@ -24,7 +24,7 @@ void topsenders(char *filename) {
 	ssize_t read;
 	pcre *emails;
 	pcre_extra *study;
-	int matches[4];
+	int matches[6];
 	int regresult;
 	struct sender *senders = NULL;
 	struct sender *asender = NULL;
@@ -49,7 +49,7 @@ void topsenders(char *filename) {
 		exit(1);
 	}
 	while (-1 != (read = getline(&line, &len, file))) {
-		regresult = pcre_exec(emails, study, line, len, 0, 0, matches, sizeof matches);
+		regresult = pcre_exec(emails, study, line, len, 0, 0, matches, sizeof(matches)/sizeof(int));
 		if (regresult < -1) {
 			fprintf(stderr, "failed to pcre_exec\n");
 			exit(1);
