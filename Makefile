@@ -12,6 +12,10 @@ all:: $(BINS)
 bench:: all
 	REF=$$(getr 3 ./topsender_pcre_c 2>&1 | perl -lne 'print $$1 if /^Time.*\((\S+) ms.per/'); for targ in $(BINS); do >&2 /bin/echo -n "| $$targ "; getr -b $$REF 3 ./$$targ >/dev/null; done
 
+exam:: all
+	for targ in $(BINS); do echo $$targ; ./$$targ | perl -pe "s/^/$$targ: /"; done
+
+
 clean::
 	rm -fv *.o
 	rm -fv $(BINS)

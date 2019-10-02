@@ -89,7 +89,7 @@ class Regex {
     }
 
     string opCall(string str) {
-        int[6] matches;
+        int[9] matches;
 
         if (pcre_exec(emails, study, str.toStringz, str.length, 0, 0,
                 matches.ptr, matches.length) > 0) {
