@@ -34,6 +34,7 @@ $ make bench
 |--------|--------------|---------------------|-------------|----------|---------------|----------|
 | 5.5x   | Rust         | .rs                 | 3375 ms     | 10.5 MB  | 12.5 (66.6) s | 361 MB   |
 | 7.5x   | go           | .go                 | 5611 ms     | 55.5 MB  | 264 ms        | 48.9 MB  |
+| 6.3x   | Kotlin       | .kt                 | 3.8 (9.5) s | 279 MB   | 4.14 (12.0) s | 490 MB   |
 |--------|--------------|---------------------|-------------|----------|---------------|----------|
 | 1.9x   | Perl         | .pl                 | 1059 ms     | 22.4 MB  |               |          |
 | 3.1x   | Pypy         | \_pypy.py           | 1726 ms     | 92.3 MB  |               |          |
@@ -42,3 +43,4 @@ $ make bench
 ## notes
 - C's uthash.h is from https://troydhanson.github.io/uthash/
 - regex.nim is using the 'regex' nimble module rather than nim's own PCRE-wrapping 're'
+- parenthesized values count work by all threads when there's a big difference: Rust finishes compiling in 12.5 seconds but relies heavily on parallel compilation to get there
