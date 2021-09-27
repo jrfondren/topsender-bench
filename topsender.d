@@ -1,25 +1,23 @@
 #! /usr/bin/env rdmd
-import std.stdio, std.string, std.regex, std.array, std.algorithm;
-
-T min(T)(T a, T b) {
-	if (a < b) return a;
-	return b;
-}
-
 void main() {
-	ulong[string] emailcounts;
-	auto re = ctRegex!(r"^(?:\S+ ){3,4}<= ([^@]+@(\S+))");
+    import std.regex : regex, matchFirst, ctRegex;
+    import std.exception : assumeUnique;
+    import std.algorithm : min, sort;
+    import std.stdio : writefln, File;
 
-	foreach (line; File("exim_mainlog").byLine()) {
-		auto m = line.match(re);
-		if (m) {
-			++emailcounts[m.front[1].idup];
-		}
+	ulong[string] senders;
+
+	foreach (line; File("exim_mainlog").byLine) {
+        if (auto m = line.matchFirst(ctRegex!(`^(?:\S+ ){3,4}<= ([^ @]+@(\S+))`))) {
+            if (ulong* count = m[1].assumeUnique in senders) {
+                count[0]++;
+            } else {
+                senders[m[1].idup] = 1;
+            }
+        }
 	}
 	
-	string[] senders = emailcounts.keys;
-	sort!((a, b) { return emailcounts[a] > emailcounts[b]; })(senders);
-	foreach (i; 0 .. min(senders.length, 5)) {
-		writefln("%5s %s", emailcounts[senders[i]], senders[i]);
+	foreach (email; senders.keys.sort!((a, b) => senders[a] > senders[b])[0 .. min($, 5)]) {
+		writefln!"%5s %s"(senders[email], email);
 	}
 }

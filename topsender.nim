@@ -1,13 +1,16 @@
-import re, tables, strformat
+import std/[re, tables, strformat]
 
-var emailcounts = initCountTable[string]()
-let re_sender = re"^(?:\S+ ){3,4}<= ([^@]+@(\S+))"
+var
+  emailcounts: CountTable[string]
+  matches: array[2, string]
+let
+  re_sender = re"^(?:\S+ ){3,4}<= ([^ @]+@(\S+))"
 
 for line in "exim_mainlog".lines:
-  if line =~ re_sender:
+  if line.contains(re_sender, matches):
     emailcounts.inc matches[0]
 
-emailcounts.sort()
+emailcounts.sort
 
 var i = 0
 for k, v in emailcounts:

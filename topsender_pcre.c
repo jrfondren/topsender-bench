@@ -34,7 +34,7 @@ void topsenders(char *filename) {
 	char *email;
 	int upto = 5;
 
-	emails = pcre_compile("^(?:[^ ]+ ){3,4}<= ([^@]+@([^ ]+))", 0, &error, &erroffset, 0);
+	emails = pcre_compile("^(?:[^ ]+ ){3,4}<= ([^ @]+@([^ ]+))", 0, &error, &erroffset, 0);
 	if (emails == NULL) {
 		fprintf(stderr, "failed to compile email regex at %d : %s\n", erroffset, error);
 		exit(1);

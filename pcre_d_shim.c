@@ -17,7 +17,7 @@ int email_init(void) {
   const char *error;
   int erroffset;
 
-  emails = pcre_compile("^(?:\\S+ ){3,4}<= ([^@]+@(\\S+))", 0, &error,
+  emails = pcre_compile("^(?:\\S+ ){3,4}<= ([^ @]+@(\\S+))", 0, &error,
                         &erroffset, 0);
   if (emails == NULL) {
     fprintf(stderr, "failed to compile email regex at %d : %s\n", erroffset,

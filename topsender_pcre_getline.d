@@ -1,38 +1,38 @@
-import std.stdio, std.string, std.regex, std.array, std.algorithm;
-
 extern (C) int email_init();
 extern (C) void email_free();
-extern (C) char *email_sender(immutable char *line, ulong len);
-extern (C) void getline_init(immutable(char) *filename);
-extern (C) int getline_get(immutable(char) **line, ulong *len);
-extern (C) void getline_free(immutable(char) **line);
-
-T min(T)(T a, T b) {
-	if (a < b) return a;
-	return b;
-}
+extern (C) char* email_sender(const(char)* line, ulong len);
+extern (C) void getline_init(const(char)* filename);
+extern (C) int getline_get(const(char)** line, ulong* len);
+extern (C) void getline_free(const(char)** line);
 
 void main() {
-	ulong[string] emailcounts;
-	immutable(char) *line;
-	ulong len;
+    import std.string : fromStringz;
+    import std.exception : assumeUnique;
+    import std.algorithm : min, sort;
+    import std.stdio : writefln, File;
 
-	email_init();
-	getline_init(std.string.toStringz("exim_mainlog"));
+    ulong[string] senders;
+    const(char)* line;
+    ulong len;
 
-	while (-1 != getline_get(&line, &len)) {
-		auto m = email_sender(line, len);
-		if (m != null) {
-			++emailcounts[std.string.fromStringz(m).idup];
-		}
-	}
-	
-	string[] senders = emailcounts.keys;
-	sort!((a, b) { return emailcounts[a] > emailcounts[b]; })(senders);
-	foreach (i; 0 .. min(senders.length, 5)) {
-		writefln("%5s %s", emailcounts[senders[i]], senders[i]);
-	}
+    email_init;
+    getline_init("exim_mainlog");
+    scope (exit) {
+        email_free;
+        getline_free(&line);
+    }
 
-	email_free();
-	getline_free(&line);
+    while (-1 != getline_get(&line, &len)) {
+        if (auto m = email_sender(line, len)) {
+            if (ulong* count = m.fromStringz.assumeUnique in senders) {
+                count[0]++;
+            } else {
+                senders[m.fromStringz.idup] = 1;
+            }
+        }
+    }
+
+    foreach (email; senders.keys.sort!((a, b) => senders[a] > senders[b])[0 .. min($, 5)]) {
+        writefln!"%5s %s"(senders[email], email);
+    }
 }

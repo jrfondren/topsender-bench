@@ -1,31 +1,31 @@
-import std.stdio, std.string, std.regex, std.array, std.algorithm;
-
 extern (C) int email_init();
 extern (C) void email_free();
-extern (C) char *email_sender(immutable char *line, ulong len);
-
-T min(T)(T a, T b) {
-	if (a < b) return a;
-	return b;
-}
+extern (C) char* email_sender(const(char)* line, size_t len);
 
 void main() {
-	ulong[string] emailcounts;
+    import std.string : fromStringz;
+    import std.exception : assumeUnique;
+    import std.algorithm : min, sort;
+    import std.stdio : writefln, File;
 
-	email_init();
+    ulong[string] senders;
 
-	foreach (line; File("exim_mainlog").byLine()) {
-		auto m = email_sender(std.string.toStringz(line), line.length);
-		if (m != null) {
-			++emailcounts[std.string.fromStringz(m).idup];
-		}
-	}
-	
-	string[] senders = emailcounts.keys;
-	sort!((a, b) { return emailcounts[a] > emailcounts[b]; })(senders);
-	foreach (i; 0 .. min(senders.length, 5)) {
-		writefln("%5s %s", emailcounts[senders[i]], senders[i]);
-	}
+    email_init;
+    scope (exit)
+        email_free;
 
-	email_free();
+    foreach (line; File("exim_mainlog").byLine) {
+        if (auto m = email_sender(line.ptr, line.length)) {
+            auto s = m.fromStringz;
+            if (ulong* count = s.assumeUnique in senders) {
+                count[0]++;
+            } else {
+                senders[s.idup] = 1;
+            }
+        }
+    }
+
+    foreach (email; senders.keys.sort!((a, b) => senders[a] > senders[b])[0 .. min($, 5)]) {
+        writefln!"%5s %s"(senders[email], email);
+    }
 }

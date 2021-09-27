@@ -1,7 +1,7 @@
 senders = {} of String => Int32
 
 File.each_line("exim_mainlog") { |line|
-  if line =~ /^(?:\S+ ){3,4}<= ([^@]+@(\S+))/
+  if line =~ /^(?:\S+ ){3,4}<= ([^ @]+@(\S+))/
     if senders.has_key? $~[1]
       senders[$~[1]] += 1
     else
